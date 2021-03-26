@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -53,6 +53,17 @@ def delete(sno):
     db.session.commit()
     return redirect('/')
 
+@app.route('/api/data')
+def data():
+    alltasks=task.query.all()
+    dict={}
+    for i,t in enumerate(alltasks):
+        dict[i]={
+            "title":t.title,
+            "desc":t.desc,
+            "datetime":t.date_created
+        }
+    return jsonify(dict)
 
 if __name__=="__main__":
     app.run(debug=True, port=8000)
